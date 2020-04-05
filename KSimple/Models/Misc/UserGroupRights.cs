@@ -1,6 +1,7 @@
 ﻿using System;
+using KSimple.Models.Entities;
 
-namespace KSimple.Models
+namespace KSimple.Models.Misc
 {
     public class UserGroupRight
     {

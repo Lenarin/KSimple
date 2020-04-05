@@ -23,7 +23,7 @@ namespace KSimple.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    UserDefinedId = table.Column<string>(nullable: true),
+                    UserDefinedId = table.Column<string>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     ModelTree = table.Column<string>(nullable: true),
                     Status = table.Column<int>(nullable: false)
@@ -31,6 +31,7 @@ namespace KSimple.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Templates", x => x.Id);
+                    table.UniqueConstraint("AK_Templates_UserDefinedId", x => x.UserDefinedId);
                 });
 
             migrationBuilder.CreateTable(
@@ -40,7 +41,8 @@ namespace KSimple.Migrations
                     Id = table.Column<Guid>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     Email = table.Column<string>(nullable: true),
-                    Password = table.Column<string>(nullable: true)
+                    Password = table.Column<string>(nullable: true),
+                    Role = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -52,7 +54,7 @@ namespace KSimple.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    UserDefinedId = table.Column<string>(nullable: true),
+                    UserDefinedId = table.Column<string>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     TemplateId = table.Column<Guid>(nullable: false),
                     Status = table.Column<int>(nullable: false)
@@ -60,6 +62,7 @@ namespace KSimple.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Storages", x => x.Id);
+                    table.UniqueConstraint("AK_Storages_UserDefinedId", x => x.UserDefinedId);
                     table.ForeignKey(
                         name: "FK_Storages_Templates_TemplateId",
                         column: x => x.TemplateId,

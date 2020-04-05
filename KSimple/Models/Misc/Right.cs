@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace KSimple.Models
+namespace KSimple.Models.Misc
 {
     [Owned]
     public class Right

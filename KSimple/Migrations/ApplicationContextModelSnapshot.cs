@@ -16,7 +16,7 @@ namespace KSimple.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.3");
 
-            modelBuilder.Entity("KSimple.Models.Group", b =>
+            modelBuilder.Entity("KSimple.Models.Entities.Group", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -27,7 +27,7 @@ namespace KSimple.Migrations
                     b.ToTable("Groups");
                 });
 
-            modelBuilder.Entity("KSimple.Models.Packet", b =>
+            modelBuilder.Entity("KSimple.Models.Entities.Packet", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -49,7 +49,7 @@ namespace KSimple.Migrations
                     b.ToTable("Packets");
                 });
 
-            modelBuilder.Entity("KSimple.Models.Storage", b =>
+            modelBuilder.Entity("KSimple.Models.Entities.Storage", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -65,31 +65,19 @@ namespace KSimple.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UserDefinedId")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasAlternateKey("UserDefinedId");
 
                     b.HasIndex("TemplateId");
 
                     b.ToTable("Storages");
                 });
 
-            modelBuilder.Entity("KSimple.Models.StorageGroup", b =>
-                {
-                    b.Property<Guid>("GroupId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("StorageId")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("GroupId", "StorageId");
-
-                    b.HasIndex("StorageId");
-
-                    b.ToTable("StorageGroups");
-                });
-
-            modelBuilder.Entity("KSimple.Models.Template", b =>
+            modelBuilder.Entity("KSimple.Models.Entities.Template", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -105,29 +93,17 @@ namespace KSimple.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("UserDefinedId")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
+                    b.HasAlternateKey("UserDefinedId");
+
                     b.ToTable("Templates");
                 });
 
-            modelBuilder.Entity("KSimple.Models.TemplateGroup", b =>
-                {
-                    b.Property<Guid>("GroupId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("TemplateId")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("GroupId", "TemplateId");
-
-                    b.HasIndex("TemplateId");
-
-                    b.ToTable("TemplateGroups");
-                });
-
-            modelBuilder.Entity("KSimple.Models.User", b =>
+            modelBuilder.Entity("KSimple.Models.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -142,12 +118,45 @@ namespace KSimple.Migrations
                     b.Property<string>("Password")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Role")
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("KSimple.Models.UserGroupRight", b =>
+            modelBuilder.Entity("KSimple.Models.Misc.StorageGroup", b =>
+                {
+                    b.Property<Guid>("GroupId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("StorageId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("GroupId", "StorageId");
+
+                    b.HasIndex("StorageId");
+
+                    b.ToTable("StorageGroups");
+                });
+
+            modelBuilder.Entity("KSimple.Models.Misc.TemplateGroup", b =>
+                {
+                    b.Property<Guid>("GroupId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("TemplateId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("GroupId", "TemplateId");
+
+                    b.HasIndex("TemplateId");
+
+                    b.ToTable("TemplateGroups");
+                });
+
+            modelBuilder.Entity("KSimple.Models.Misc.UserGroupRight", b =>
                 {
                     b.Property<Guid>("GroupId")
                         .HasColumnType("TEXT");
@@ -162,67 +171,67 @@ namespace KSimple.Migrations
                     b.ToTable("UserGroupRights");
                 });
 
-            modelBuilder.Entity("KSimple.Models.Packet", b =>
+            modelBuilder.Entity("KSimple.Models.Entities.Packet", b =>
                 {
-                    b.HasOne("KSimple.Models.Storage", "Storage")
+                    b.HasOne("KSimple.Models.Entities.Storage", "Storage")
                         .WithMany("Packets")
                         .HasForeignKey("StorageId");
                 });
 
-            modelBuilder.Entity("KSimple.Models.Storage", b =>
+            modelBuilder.Entity("KSimple.Models.Entities.Storage", b =>
                 {
-                    b.HasOne("KSimple.Models.Template", "Template")
+                    b.HasOne("KSimple.Models.Entities.Template", "Template")
                         .WithMany("Storages")
                         .HasForeignKey("TemplateId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("KSimple.Models.StorageGroup", b =>
+            modelBuilder.Entity("KSimple.Models.Misc.StorageGroup", b =>
                 {
-                    b.HasOne("KSimple.Models.Group", "Group")
+                    b.HasOne("KSimple.Models.Entities.Group", "Group")
                         .WithMany("StorageGroups")
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("KSimple.Models.Storage", "Storage")
+                    b.HasOne("KSimple.Models.Entities.Storage", "Storage")
                         .WithMany("StorageGroups")
                         .HasForeignKey("StorageId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("KSimple.Models.TemplateGroup", b =>
+            modelBuilder.Entity("KSimple.Models.Misc.TemplateGroup", b =>
                 {
-                    b.HasOne("KSimple.Models.Group", "Group")
+                    b.HasOne("KSimple.Models.Entities.Group", "Group")
                         .WithMany("TemplateGroups")
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("KSimple.Models.Template", "Template")
+                    b.HasOne("KSimple.Models.Entities.Template", "Template")
                         .WithMany("TemplateGroups")
                         .HasForeignKey("TemplateId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("KSimple.Models.UserGroupRight", b =>
+            modelBuilder.Entity("KSimple.Models.Misc.UserGroupRight", b =>
                 {
-                    b.HasOne("KSimple.Models.Group", "Group")
+                    b.HasOne("KSimple.Models.Entities.Group", "Group")
                         .WithMany("UserGroupRights")
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("KSimple.Models.User", "User")
+                    b.HasOne("KSimple.Models.Entities.User", "User")
                         .WithMany("UserGroupRights")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsOne("KSimple.Models.Right", "Rights", b1 =>
+                    b.OwnsOne("KSimple.Models.Misc.Right", "Rights", b1 =>
                         {
                             b1.Property<Guid>("UserGroupRightGroupId")
                                 .HasColumnType("TEXT");

@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using KSimple.Models.Entities;
+using KSimple.Models.Misc;
+using Microsoft.EntityFrameworkCore;
 
 namespace KSimple.Models
 {
@@ -30,8 +32,26 @@ namespace KSimple.Models
 
             modelBuilder.Entity<TemplateGroup>()
                 .HasKey(t => new {t.GroupId, t.TemplateId});
+
+            modelBuilder.Entity<Storage>()
+                .HasAlternateKey(s => s.UserDefinedId);
+
+            modelBuilder.Entity<Template>()
+                .HasAlternateKey(t => t.UserDefinedId);
             
             base.OnModelCreating(modelBuilder);
+        }
+
+        public void NotNullUpdate<T>(T obj)
+        {
+            foreach (var prop in obj.GetType().GetProperties())
+            {
+                if (prop.GetValue(obj) == null) continue;
+                if (!this.Entry(obj).Property(prop.Name).Metadata.IsKey())
+                {
+                    this.Entry(obj).Property(prop.Name).IsModified = true;
+                }
+            }
         }
         
     }

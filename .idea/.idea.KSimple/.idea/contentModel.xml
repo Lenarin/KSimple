@@ -8,31 +8,42 @@
     <e p="C:\Users\Lenarin\.Rider2019.3\system\resharper-host\local\Transient\ReSharperHost\v193\SolutionCaches\_KSimple.504204113.00" t="ExcludeRecursive" />
     <e p="D:\Projects\NETProjects\KSimple" t="IncludeFlat">
       <e p="KSimple" t="IncludeRecursive">
+        <e p=".gitignore" t="Include" />
         <e p="appsettings.Development.json" t="Include" />
         <e p="appsettings.json" t="Include" />
         <e p="bin" t="ExcludeRecursive" />
         <e p="Controllers" t="Include">
+          <e p="AuthController.cs" t="Include" />
+          <e p="GroupsController.cs" t="Include" />
           <e p="TemplatesController.cs" t="Include" />
+          <e p="UsersController.cs" t="Include" />
         </e>
         <e p="KSimple.csproj" t="IncludeRecursive" />
+        <e p="Middlewares" t="Include">
+          <e p="SerilogMiddleware.cs" t="Include" />
+        </e>
         <e p="Migrations" t="Include">
-          <e p="20200401032103_test.cs" t="Include" />
-          <e p="20200401032103_test.Designer.cs" t="Include" />
+          <e p="20200404192849_test.cs" t="Include" />
+          <e p="20200404192849_test.Designer.cs" t="Include" />
           <e p="ApplicationContextModelSnapshot.cs" t="Include" />
         </e>
         <e p="Models" t="Include">
           <e p="ApplicationContext.cs" t="Include" />
-          <e p="Group.cs" t="Include" />
-          <e p="Packet.cs" t="Include" />
-          <e p="Right.cs" t="Include" />
-          <e p="Status.cs" t="Include" />
-          <e p="Storage.cs" t="Include" />
-          <e p="StorageGroup.cs" t="Include" />
-          <e p="Template.cs" t="Include" />
-          <e p="TemplateGroup.cs" t="Include" />
-          <e p="TemplateRepository.cs" t="Include" />
-          <e p="User.cs" t="Include" />
-          <e p="UserGroupRights.cs" t="Include" />
+          <e p="Entities" t="Include">
+            <e p="Group.cs" t="Include" />
+            <e p="Packet.cs" t="Include" />
+            <e p="Status.cs" t="Include" />
+            <e p="Storage.cs" t="Include" />
+            <e p="Template.cs" t="Include" />
+            <e p="User.cs" t="Include" />
+          </e>
+          <e p="Misc" t="Include">
+            <e p="AuthOptions.cs" t="Include" />
+            <e p="Right.cs" t="Include" />
+            <e p="StorageGroup.cs" t="Include" />
+            <e p="TemplateGroup.cs" t="Include" />
+            <e p="UserGroupRights.cs" t="Include" />
+          </e>
         </e>
         <e p="obj" t="ExcludeRecursive">
           <e p="Debug" t="Include">

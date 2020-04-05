@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using KSimple.Models.Misc;
 
-namespace KSimple.Models
+namespace KSimple.Models.Entities
 {
     public class User
     {
@@ -9,6 +10,7 @@ namespace KSimple.Models
         public string Name { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
+        public string Role { get; set; }
 
         public List<UserGroupRight> UserGroupRights { get; set; }
     }

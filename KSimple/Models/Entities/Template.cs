@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using KSimple.Models.Misc;
 
-namespace KSimple.Models
+namespace KSimple.Models.Entities
 {
     public class Template
     {

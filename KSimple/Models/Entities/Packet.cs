@@ -1,8 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace KSimple.Models
+namespace KSimple.Models.Entities
 {
     public class Packet
     {

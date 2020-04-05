@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading.Tasks;
 using KSimple.Models;
+using KSimple.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace KSimple.Controllers
 {
@@ -9,16 +13,37 @@ namespace KSimple.Controllers
     [ApiController]
     public class TemplatesController : ControllerBase
     {
-        [HttpGet]
-        public string GetTemplates()
+        private readonly ApplicationContext _context;
+
+        public TemplatesController(ApplicationContext context)
         {
-            return "Hello World!";
+            _context = context;
+        }
+        
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Template>>> GetTemplates()
+        {
+            return await _context.Templates.ToListAsync();
         }
 
         [HttpGet("{id}")]
-        public string GetTemplateById(string id)
+        public Dictionary<string, dynamic> GetTemplateById(string id, Dictionary<string, JsonElement> data)
         {
-            return id;
+            var res = new Dictionary<string, dynamic>();
+            foreach (KeyValuePair<string, JsonElement> pair in data)
+            {
+                try
+                {
+                    res[pair.Key] = pair.Value.GetArrayLength();
+                }
+                catch
+                {
+                    res[pair.Key] = "Not array";
+                }
+            }
+
+            return res;
+
         }
 
         [HttpPost]

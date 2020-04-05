@@ -1,4 +1,4 @@
-﻿namespace KSimple.Models
+﻿namespace KSimple.Models.Entities
 {
     public enum Status
     {
