@@ -7,7 +7,7 @@ using FluentMigrator.Runner;
 using KSimple.Middlewares;
 using KSimple.Models;
 using KSimple.Models.Misc;
-using KSimple.Models.Responses.MySqlTypeHandlers;
+using KSimple.Models.MySqlTypeHandlers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

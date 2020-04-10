@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Data;
-using System.Text.Json;
 using Dapper;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace KSimple.Models.Responses.MySqlTypeHandlers
+namespace KSimple.Models.MySqlTypeHandlers
 {
     public class MySqlJsonDictTypeHandler : SqlMapper.TypeHandler<Dictionary<string, JToken>>
     {

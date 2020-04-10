@@ -2,7 +2,7 @@
 using System.Data;
 using Dapper;
 
-namespace KSimple.Models.Responses.MySqlTypeHandlers
+namespace KSimple.Models.MySqlTypeHandlers
 {
     public class MySqlGuidTypeHandler : SqlMapper.TypeHandler<Guid>
     {

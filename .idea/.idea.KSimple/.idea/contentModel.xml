@@ -15,6 +15,7 @@
         <e p="Controllers" t="Include">
           <e p="AuthController.cs" t="Include" />
           <e p="GroupsController.cs" t="Include" />
+          <e p="StoragesController.cs" t="Include" />
           <e p="TemplatesController.cs" t="Include" />
           <e p="UsersController.cs" t="Include" />
         </e>
@@ -23,8 +24,8 @@
           <e p="SerilogMiddleware.cs" t="Include" />
         </e>
         <e p="Migrations" t="Include">
-          <e p="20200404192849_test.cs" t="Include" />
-          <e p="20200404192849_test.Designer.cs" t="Include" />
+          <e p="20200409050146_test.cs" t="Include" />
+          <e p="20200409050146_test.Designer.cs" t="Include" />
           <e p="ApplicationContextModelSnapshot.cs" t="Include" />
         </e>
         <e p="Models" t="Include">
@@ -32,7 +33,6 @@
           <e p="Entities" t="Include">
             <e p="Group.cs" t="Include" />
             <e p="Packet.cs" t="Include" />
-            <e p="Status.cs" t="Include" />
             <e p="Storage.cs" t="Include" />
             <e p="Template.cs" t="Include" />
             <e p="User.cs" t="Include" />
@@ -40,9 +40,23 @@
           <e p="Misc" t="Include">
             <e p="AuthOptions.cs" t="Include" />
             <e p="Right.cs" t="Include" />
+            <e p="StorageField.cs" t="Include" />
             <e p="StorageGroup.cs" t="Include" />
             <e p="TemplateGroup.cs" t="Include" />
             <e p="UserGroupRights.cs" t="Include" />
+          </e>
+          <e p="MySqlTypeHandlers" t="Include">
+            <e p="MySqlDictStorageFieldTypeHandler.cs" t="Include" />
+            <e p="MySQLGuidTypeHandler.cs" t="Include" />
+            <e p="MySqlJsonDictTypeHandler.cs" t="Include" />
+          </e>
+          <e p="Repositories" t="Include">
+            <e p="PacketRepository.cs" t="Include" />
+            <e p="StorageRepository.cs" t="Include" />
+          </e>
+          <e p="Responses" t="Include">
+            <e p="Misc.cs" t="Include" />
+            <e p="StorageResponse.cs" t="Include" />
           </e>
         </e>
         <e p="obj" t="ExcludeRecursive">
@@ -58,6 +72,8 @@
         </e>
         <e p="Startup.cs" t="Include" />
         <e p="test.db" t="Include" />
+        <e p="test.db-shm" t="Include" />
+        <e p="test.db-wal" t="Include" />
       </e>
       <e p="KSimple.sln" t="IncludeFlat" />
       <e p="packages" t="ExcludeRecursive" />

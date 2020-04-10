@@ -3,9 +3,8 @@ using System.Data;
 using Dapper;
 using KSimple.Models.Misc;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
-namespace KSimple.Models.Responses.MySqlTypeHandlers
+namespace KSimple.Models.MySqlTypeHandlers
 {
     public class MySqlDictStorageFieldTypeHandler : SqlMapper.TypeHandler<Dictionary<string, StorageField>>
     {

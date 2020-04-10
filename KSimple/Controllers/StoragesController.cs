@@ -7,6 +7,7 @@ using Dapper;
 using KSimple.Models;
 using KSimple.Models.Entities;
 using KSimple.Models.Misc;
+using KSimple.Models.Repositories;
 using KSimple.Models.Responses;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -36,14 +37,21 @@ namespace KSimple.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<StorageResponse>>> GetStorages()
         {
-            return (await _context.Storages.ToListAsync()).ConvertAll(x => new StorageResponse(x));
+            await using var connection = new SqliteConnection(_configuration.GetConnectionString("DefaultConnection"));
+            connection.Open();
+            var res = await new StorageRepository(connection).GetAllStorages();
+
+            return Ok(res.ToList().ConvertAll(s => new StorageResponse(s)));
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<StorageResponse>> GetStorageById(Guid id)
         {
-            return new StorageResponse(await _context.Storages.FindAsync(id));
+            await using var connection = new SqliteConnection(_configuration.GetConnectionString("DefaultConnection"));
+            connection.Open();
+            var res = await new StorageRepository(connection).GetStorageById(id);
 
+            return Ok(new StorageResponse(res));
         }
 
         [HttpPost]
@@ -60,7 +68,10 @@ namespace KSimple.Controllers
             
             storage.Id = new Guid();
             
-            await _context.Storages.AddAsync(storage);
+            await using var connection = new SqliteConnection(_configuration.GetConnectionString("DefaultConnection"));
+            connection.Open();
+
+            await new StorageRepository(connection).InsertStorage(storage);
 
             var packet = new Packet
             {
@@ -69,37 +80,71 @@ namespace KSimple.Controllers
                 Data = data,
             };
 
-            await _context.Packets.AddAsync(packet);
-
-            await _context.SaveChangesAsync();
-                
+            await new PacketRepository(connection).InsertNewPacket(packet);
+            
             return Ok(new StorageResponse(storage));
         }
 
+        [HttpPut("{id}")]
+        public async Task<ActionResult> PutStorage(Guid id, Storage storage)
+        {
+            if (storage.Id != id) return BadRequest(new ErrorResponse("Different id's"));
+            
+            await using var connection = new SqliteConnection(_configuration.GetConnectionString("DefaultConnection"));
+            connection.Open();
+
+            new StorageRepository(connection).UpdateStorage(storage);
+
+            return Ok();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<Storage>> DeleteStorage(Guid id)
+        {
+            await using var connection = new SqliteConnection(_configuration.GetConnectionString("DefaultConnection"));
+            connection.Open();
+
+            return await new StorageRepository(connection).DeleteStorageById(id);
+        }
+
         [HttpGet("{storageId}/packets")]
-        public async Task<ActionResult<Packet>> GetLastPacket(Guid storageId)
+        [Consumes("application/x-www-form-urlencoded")]
+        public async Task<ActionResult<Packet>> GetLastPacket(Guid storageId, [FromForm] long? start, [FromForm] long? end)
         {
 /*
             var res = await _context.Packets.AsNoTracking()
                 .OrderBy(p => p.ServerTimestamp)
                 .FirstOrDefaultAsync(p => p.StorageId == storageId);
-*/
-
+*/          
             await using var connection = new SqliteConnection(_configuration.GetConnectionString("DefaultConnection"));
             connection.Open();
-            var res = await connection.QueryFirstOrDefaultAsync<Packet>(@"
-                SELECT * FROM Packets
-                WHERE StorageId = @StorageId
-                ORDER BY ServerTimestamp DESC
-                LIMIT 1
-                ", new {StorageId = storageId});
-            
-            if (res == default(Packet))
-            {
-                return NotFound(new ErrorResponse("Storage not found"));
-            }
 
-            return Ok(res);
+            if (start != null && end != null)
+            {
+                try
+                {
+                    var res = await 
+                        new PacketRepository(connection).GetPacketsByStorageIdAndTime(storageId, (long) start, (long) end);
+
+                    return Ok(res);
+                }
+                catch (ArgumentNullException)
+                {
+                    return NotFound();
+                }
+            }
+            else
+            {
+                var res = await 
+                    new PacketRepository(connection).GetLastPacketByStorageId(storageId);
+                
+                if (res == null)
+                {
+                    return NotFound(new ErrorResponse("Storage not found"));
+                }
+
+                return Ok(res);
+            }
         }
 
         [HttpPost("{storageId}/packets")]
@@ -112,14 +157,7 @@ namespace KSimple.Controllers
                 connection.Open();
                 Storage storage;
                 Packet lastPacket;
-                (storage, lastPacket) = (await connection.QueryAsync<Storage, Packet, (Storage, Packet)>(@"
-                    SELECT * FROM Storages
-                    JOIN Packets P on Storages.Id = P.StorageId
-                    WHERE StorageId = @StorageId
-                    ORDER BY ServerTimestamp DESC
-                    LIMIT 1
-                ", (storage, packet) => (storage, packet),
-                    new {StorageId = storageId})).FirstOrDefault();
+                (storage, lastPacket) = await new StorageRepository(connection).GetStorageWithLastPacketByStorageId(storageId);
                     
                 /*
                 var storage = await _context.Storages.FindAsync(storageId);
@@ -135,11 +173,7 @@ namespace KSimple.Controllers
                 packet.StorageId = storageId;
                 packet.ServerTimestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
 
-                packet.Id = await connection.QueryFirstAsync<int>(@"
-                    INSERT INTO Packets(StorageId, UserTimestamp, ServerTimestamp, Data) 
-                    VALUES (@StorageId, @UserTimestamp, @ServerTimestamp, @Data);
-                    SELECT last_insert_rowid();
-                ", packet);
+                packet.Id = await new PacketRepository(connection).InsertNewPacket(packet);
 
                 /*
                 await _context.Packets.AddAsync(packet);
