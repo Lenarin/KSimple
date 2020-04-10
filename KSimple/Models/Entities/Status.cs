@@ -1,6 +1,8 @@
 ﻿namespace KSimple.Models.Entities
 {
-    public enum Status
+    // TODO change to strings with predefined statuses
+    
+    public class Status
     {
         Ok,
         Error

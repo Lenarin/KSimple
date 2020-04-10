@@ -15,6 +15,6 @@ namespace KSimple.Models.Entities
         public List<TemplateGroup> TemplateGroups { get; set; }
         public List<Storage> Storages { get; set; }
         
-        public Status Status { get; set; }
+        public string Status { get; set; }
     }
 }

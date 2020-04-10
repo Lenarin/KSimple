@@ -26,6 +26,7 @@ namespace KSimple.Controllers
             return await _context.Templates.ToListAsync();
         }
 
+        // TODO make normal
         [HttpGet("{id}")]
         public Dictionary<string, dynamic> GetTemplateById(string id, Dictionary<string, JsonElement> data)
         {

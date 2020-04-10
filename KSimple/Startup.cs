@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Dapper;
 using FluentMigrator.Runner;
 using KSimple.Middlewares;
 using KSimple.Models;
 using KSimple.Models.Misc;
+using KSimple.Models.Responses.MySqlTypeHandlers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -34,9 +36,13 @@ namespace KSimple
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            string connection = Configuration.GetConnectionString("DefaultConnection");
+            var connection = Configuration.GetConnectionString("DefaultConnection");
 
             services.AddDbContext<ApplicationContext>(options => options.UseSqlite(connection));
+            
+            SqlMapper.AddTypeHandler(new MySqlGuidTypeHandler());
+            SqlMapper.AddTypeHandler(new MySqlJsonDictTypeHandler());
+            SqlMapper.AddTypeHandler(new MySqlDictStorageFieldTypeHandler());
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -57,10 +63,10 @@ namespace KSimple
                         ValidateIssuerSigningKey = true,
                     };
                 });
-
+            
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "API", Version = "v1"}); });
 
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -69,9 +75,8 @@ namespace KSimple
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSerilogRequestLogging();
             }
-
-            app.UseSerilogRequestLogging();
 
             app.UseHttpsRedirection();
 

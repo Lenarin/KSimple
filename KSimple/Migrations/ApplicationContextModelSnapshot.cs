@@ -22,6 +22,9 @@ namespace KSimple.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
                     b.ToTable("Groups");
@@ -36,11 +39,14 @@ namespace KSimple.Migrations
                     b.Property<string>("Data")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("StorageId")
+                    b.Property<long?>("ServerTimestamp")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("StorageId")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("Timestamp")
-                        .HasColumnType("TEXT");
+                    b.Property<long?>("UserTimestamp")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -56,17 +62,25 @@ namespace KSimple.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT")
+                        .HasMaxLength(32);
+
+                    b.Property<string>("Status")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("StorageFields")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
-                    b.Property<Guid>("TemplateId")
+                    b.Property<Guid?>("TemplateId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UserDefinedId")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT")
+                        .HasMaxLength(32);
 
                     b.HasKey("Id");
 
@@ -89,8 +103,8 @@ namespace KSimple.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Status")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("UserDefinedId")
                         .IsRequired()
@@ -113,6 +127,7 @@ namespace KSimple.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Password")
@@ -122,6 +137,8 @@ namespace KSimple.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasAlternateKey("Name");
 
                     b.ToTable("Users");
                 });
@@ -173,18 +190,18 @@ namespace KSimple.Migrations
 
             modelBuilder.Entity("KSimple.Models.Entities.Packet", b =>
                 {
-                    b.HasOne("KSimple.Models.Entities.Storage", "Storage")
+                    b.HasOne("KSimple.Models.Entities.Storage", null)
                         .WithMany("Packets")
-                        .HasForeignKey("StorageId");
+                        .HasForeignKey("StorageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("KSimple.Models.Entities.Storage", b =>
                 {
                     b.HasOne("KSimple.Models.Entities.Template", "Template")
                         .WithMany("Storages")
-                        .HasForeignKey("TemplateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TemplateId");
                 });
 
             modelBuilder.Entity("KSimple.Models.Misc.StorageGroup", b =>

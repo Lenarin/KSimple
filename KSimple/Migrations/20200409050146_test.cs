@@ -11,7 +11,8 @@ namespace KSimple.Migrations
                 name: "Groups",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false)
+                    Id = table.Column<Guid>(nullable: false),
+                    Name = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -26,7 +27,7 @@ namespace KSimple.Migrations
                     UserDefinedId = table.Column<string>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     ModelTree = table.Column<string>(nullable: true),
-                    Status = table.Column<int>(nullable: false)
+                    Status = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -39,7 +40,7 @@ namespace KSimple.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    Name = table.Column<string>(nullable: true),
+                    Name = table.Column<string>(nullable: false),
                     Email = table.Column<string>(nullable: true),
                     Password = table.Column<string>(nullable: true),
                     Role = table.Column<string>(nullable: true)
@@ -47,6 +48,7 @@ namespace KSimple.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
+                    table.UniqueConstraint("AK_Users_Name", x => x.Name);
                 });
 
             migrationBuilder.CreateTable(
@@ -54,10 +56,11 @@ namespace KSimple.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    UserDefinedId = table.Column<string>(nullable: false),
-                    Name = table.Column<string>(nullable: true),
-                    TemplateId = table.Column<Guid>(nullable: false),
-                    Status = table.Column<int>(nullable: false)
+                    UserDefinedId = table.Column<string>(maxLength: 32, nullable: false),
+                    Name = table.Column<string>(maxLength: 32, nullable: false),
+                    StorageFields = table.Column<string>(nullable: false),
+                    Status = table.Column<string>(nullable: false),
+                    TemplateId = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -68,7 +71,7 @@ namespace KSimple.Migrations
                         column: x => x.TemplateId,
                         principalTable: "Templates",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -127,8 +130,9 @@ namespace KSimple.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    StorageId = table.Column<Guid>(nullable: true),
-                    Timestamp = table.Column<DateTime>(nullable: false),
+                    StorageId = table.Column<Guid>(nullable: false),
+                    UserTimestamp = table.Column<long>(nullable: true),
+                    ServerTimestamp = table.Column<long>(nullable: true),
                     Data = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -139,7 +143,7 @@ namespace KSimple.Migrations
                         column: x => x.StorageId,
                         principalTable: "Storages",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(

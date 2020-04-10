@@ -10,7 +10,7 @@ using KSimple.Models.Misc;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-
+// TODO Add get user by username
 namespace KSimple.Controllers
 {
     [Route("[controller]")]

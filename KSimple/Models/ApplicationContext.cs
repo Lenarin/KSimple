@@ -1,6 +1,12 @@
-﻿using KSimple.Models.Entities;
+﻿using System;
+using System.Collections.Generic;
+using KSimple.Models.Entities;
 using KSimple.Models.Misc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using JsonConverter = System.Text.Json.Serialization.JsonConverter;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace KSimple.Models
 {
@@ -38,7 +44,24 @@ namespace KSimple.Models
 
             modelBuilder.Entity<Template>()
                 .HasAlternateKey(t => t.UserDefinedId);
+
+            modelBuilder.Entity<User>()
+                .HasAlternateKey(u => u.Name);
+
             
+            modelBuilder.Entity<Storage>()
+                .Property(s => s.StorageFields)
+                .HasConversion(
+                    d => JsonConvert.SerializeObject(d, Formatting.None),
+                    s => JsonConvert.DeserializeObject<Dictionary<string, StorageField>>(s));
+            
+            modelBuilder.Entity<Packet>()
+                .Property(p => p.Data)
+                .HasConversion(
+                    d => JsonConvert.SerializeObject(d, Formatting.None),
+                    s => JsonConvert.DeserializeObject<Dictionary<string, JToken>>(s));
+                    
+
             base.OnModelCreating(modelBuilder);
         }
 
