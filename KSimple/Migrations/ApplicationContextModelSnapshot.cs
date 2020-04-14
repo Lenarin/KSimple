@@ -98,17 +98,22 @@ namespace KSimple.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ModelTree")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
-                        .HasColumnType("TEXT");
+                        .IsRequired()
+                        .HasColumnType("TEXT")
+                        .HasMaxLength(32);
 
                     b.Property<string>("Status")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UserDefinedId")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT")
+                        .HasMaxLength(32);
 
                     b.HasKey("Id");
 

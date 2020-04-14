@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Threading.Tasks;
 using Dapper;
 using KSimple.Models.Entities;
@@ -9,9 +10,9 @@ namespace KSimple.Models.Repositories
 {
     public class PacketRepository
     {
-        private SqliteConnection _connection;
+        private DbConnection _connection;
 
-        public PacketRepository(SqliteConnection connection)
+        public PacketRepository(DbConnection connection)
         {
             _connection = connection;
         }

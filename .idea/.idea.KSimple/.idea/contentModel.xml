@@ -24,8 +24,8 @@
           <e p="SerilogMiddleware.cs" t="Include" />
         </e>
         <e p="Migrations" t="Include">
-          <e p="20200409050146_test.cs" t="Include" />
-          <e p="20200409050146_test.Designer.cs" t="Include" />
+          <e p="20200410192306_test.cs" t="Include" />
+          <e p="20200410192306_test.Designer.cs" t="Include" />
           <e p="ApplicationContextModelSnapshot.cs" t="Include" />
         </e>
         <e p="Models" t="Include">
@@ -39,6 +39,7 @@
           </e>
           <e p="Misc" t="Include">
             <e p="AuthOptions.cs" t="Include" />
+            <e p="ModelTreeNode.cs" t="Include" />
             <e p="Right.cs" t="Include" />
             <e p="StorageField.cs" t="Include" />
             <e p="StorageGroup.cs" t="Include" />
@@ -49,10 +50,13 @@
             <e p="MySqlDictStorageFieldTypeHandler.cs" t="Include" />
             <e p="MySQLGuidTypeHandler.cs" t="Include" />
             <e p="MySqlJsonDictTypeHandler.cs" t="Include" />
+            <e p="MySqlModelTreeNodeTypeHandler.cs" t="Include" />
+            <e p="MySqlTypeHandlers.cs" t="Include" />
           </e>
           <e p="Repositories" t="Include">
             <e p="PacketRepository.cs" t="Include" />
             <e p="StorageRepository.cs" t="Include" />
+            <e p="TemplateRepository.cs" t="Include" />
           </e>
           <e p="Responses" t="Include">
             <e p="Misc.cs" t="Include" />
@@ -72,8 +76,6 @@
         </e>
         <e p="Startup.cs" t="Include" />
         <e p="test.db" t="Include" />
-        <e p="test.db-shm" t="Include" />
-        <e p="test.db-wal" t="Include" />
       </e>
       <e p="KSimple.sln" t="IncludeFlat" />
       <e p="packages" t="ExcludeRecursive" />

@@ -40,9 +40,7 @@ namespace KSimple
 
             services.AddDbContext<ApplicationContext>(options => options.UseSqlite(connection));
             
-            SqlMapper.AddTypeHandler(new MySqlGuidTypeHandler());
-            SqlMapper.AddTypeHandler(new MySqlJsonDictTypeHandler());
-            SqlMapper.AddTypeHandler(new MySqlDictStorageFieldTypeHandler());
+            MySqlTypeHandlers.AddMySqlTypeHandlers();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>

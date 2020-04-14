@@ -24,10 +24,10 @@ namespace KSimple.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    UserDefinedId = table.Column<string>(nullable: false),
-                    Name = table.Column<string>(nullable: true),
-                    ModelTree = table.Column<string>(nullable: true),
-                    Status = table.Column<string>(nullable: true)
+                    UserDefinedId = table.Column<string>(maxLength: 32, nullable: false),
+                    Name = table.Column<string>(maxLength: 32, nullable: false),
+                    ModelTree = table.Column<string>(nullable: false),
+                    Status = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {

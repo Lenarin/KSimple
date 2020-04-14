@@ -17,8 +17,6 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using JsonSerializer = Newtonsoft.Json.JsonSerializer;
 
-// TODO Put/Del storages
-
 namespace KSimple.Controllers
 {
     [Route("[controller]")]

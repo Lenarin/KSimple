@@ -17,10 +17,10 @@ namespace KSimple.Models.Misc
         
         public static bool Check(string dataType, JToken value)
         {
-            return _checkList[dataType](value);
+            return TypeList[dataType](value);
         }
         
-        private static Dictionary<string, Func<JToken, bool>> _checkList = 
+        public static Dictionary<string, Func<JToken, bool>> TypeList = 
             new Dictionary<string, Func<JToken, bool>>
             {
                 {"Number", elem =>  elem.Type == JTokenType.Float || elem.Type == JTokenType.Integer},

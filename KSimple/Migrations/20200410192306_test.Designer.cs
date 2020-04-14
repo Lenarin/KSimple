@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KSimple.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20200409050146_test")]
+    [Migration("20200410192306_test")]
     partial class test
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -100,17 +100,22 @@ namespace KSimple.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ModelTree")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
-                        .HasColumnType("TEXT");
+                        .IsRequired()
+                        .HasColumnType("TEXT")
+                        .HasMaxLength(32);
 
                     b.Property<string>("Status")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UserDefinedId")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT")
+                        .HasMaxLength(32);
 
                     b.HasKey("Id");
 

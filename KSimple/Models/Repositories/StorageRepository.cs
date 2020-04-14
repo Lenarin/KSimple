@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
@@ -10,9 +11,9 @@ namespace KSimple.Models.Repositories
 {
     public class StorageRepository
     {
-        private SqliteConnection _connection;
+        private DbConnection _connection;
 
-        public StorageRepository(SqliteConnection connection)
+        public StorageRepository(DbConnection connection)
         {
             _connection = connection;
         }

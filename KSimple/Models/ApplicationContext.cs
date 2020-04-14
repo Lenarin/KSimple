@@ -60,6 +60,12 @@ namespace KSimple.Models
                 .HasConversion(
                     d => JsonConvert.SerializeObject(d, Formatting.None),
                     s => JsonConvert.DeserializeObject<Dictionary<string, JToken>>(s));
+
+            modelBuilder.Entity<Template>()
+                .Property(t => t.ModelTree)
+                .HasConversion(
+                    t => JsonConvert.SerializeObject(t, Formatting.Indented),
+                    s => JsonConvert.DeserializeObject<ModelTreeNode>(s));
                     
 
             base.OnModelCreating(modelBuilder);

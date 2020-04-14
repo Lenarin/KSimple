@@ -4,5 +4,6 @@
     <file url="file://$PROJECT_DIR$/KSimple/Controllers/StoragesController.cs" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/KSimple/Models/Repositories/PacketRepository.cs" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/KSimple/Models/Repositories/StorageRepository.cs" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/KSimple/Models/Repositories/TemplateRepository.cs" dialect="GenericSQL" />
   </component>
 </project>
