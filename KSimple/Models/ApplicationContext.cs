@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using KSimple.Models.Entities;
 using KSimple.Models.Misc;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +18,7 @@ namespace KSimple.Models
         public DbSet<Packet> Packets { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
         
         public DbSet<UserGroupRight> UserGroupRights { get; set; }
         public DbSet<StorageGroup> StorageGroups { get; set; }
@@ -38,7 +40,7 @@ namespace KSimple.Models
 
             modelBuilder.Entity<TemplateGroup>()
                 .HasKey(t => new {t.GroupId, t.TemplateId});
-
+            
             modelBuilder.Entity<Storage>()
                 .HasAlternateKey(s => s.UserDefinedId);
 
@@ -66,23 +68,11 @@ namespace KSimple.Models
                 .HasConversion(
                     t => JsonConvert.SerializeObject(t, Formatting.Indented),
                     s => JsonConvert.DeserializeObject<ModelTreeNode>(s));
-                    
+
 
             base.OnModelCreating(modelBuilder);
         }
 
-        public void NotNullUpdate<T>(T obj)
-        {
-            foreach (var prop in obj.GetType().GetProperties())
-            {
-                if (prop.GetValue(obj) == null) continue;
-                if (!this.Entry(obj).Property(prop.Name).Metadata.IsKey())
-                {
-                    this.Entry(obj).Property(prop.Name).IsModified = true;
-                }
-            }
-        }
-        
     }
     
 }

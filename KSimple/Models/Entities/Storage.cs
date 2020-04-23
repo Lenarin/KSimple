@@ -30,6 +30,15 @@ namespace KSimple.Models.Entities
         
         public List<Packet> Packets { get; set; }
 
+        public void Merge(Storage storage)
+        {
+            if (storage.UserDefinedId != null) UserDefinedId = storage.UserDefinedId;
+            if (storage.Name != null) Name = storage.Name;
+            if (storage.StorageFields != null) StorageFields = storage.StorageFields;
+            if (storage.Status != null) Status = storage.Status;
+            TemplateId = null;
+        }
+
         /// <summary>
         /// Parse incoming data: check types, delete wrong keys and set default values to not provided keys.
         /// </summary>

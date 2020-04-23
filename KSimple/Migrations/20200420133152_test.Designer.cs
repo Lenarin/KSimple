@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KSimple.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20200410192306_test")]
+    [Migration("20200420133152_test")]
     partial class test
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -57,6 +57,24 @@ namespace KSimple.Migrations
                     b.ToTable("Packets");
                 });
 
+            modelBuilder.Entity("KSimple.Models.Entities.RefreshToken", b =>
+                {
+                    b.Property<string>("Token")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("ValidTo")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Token");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RefreshTokens");
+                });
+
             modelBuilder.Entity("KSimple.Models.Entities.Storage", b =>
                 {
                     b.Property<Guid>("Id")
@@ -100,16 +118,13 @@ namespace KSimple.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ModelTree")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("TEXT")
                         .HasMaxLength(32);
 
                     b.Property<string>("Status")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UserDefinedId")
@@ -128,6 +143,9 @@ namespace KSimple.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("DefaultGroupId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
@@ -204,6 +222,15 @@ namespace KSimple.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("KSimple.Models.Entities.RefreshToken", b =>
+                {
+                    b.HasOne("KSimple.Models.Entities.User", null)
+                        .WithMany("RefreshTokens")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("KSimple.Models.Entities.Storage", b =>
                 {
                     b.HasOne("KSimple.Models.Entities.Template", "Template")
@@ -263,10 +290,19 @@ namespace KSimple.Migrations
                             b1.Property<Guid>("UserGroupRightUserId")
                                 .HasColumnType("TEXT");
 
+                            b1.Property<bool>("CanModifyGroup")
+                                .HasColumnType("INTEGER");
+
                             b1.Property<bool>("CanModifyStorages")
                                 .HasColumnType("INTEGER");
 
+                            b1.Property<bool>("CanModifyTemplates")
+                                .HasColumnType("INTEGER");
+
                             b1.Property<bool>("CanReadStorages")
+                                .HasColumnType("INTEGER");
+
+                            b1.Property<bool>("CanReadTemplates")
                                 .HasColumnType("INTEGER");
 
                             b1.HasKey("UserGroupRightGroupId", "UserGroupRightUserId");

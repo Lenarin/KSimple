@@ -11,7 +11,7 @@ namespace KSimple.Models.Repositories
 {
     public class StorageRepository
     {
-        private DbConnection _connection;
+        private readonly DbConnection _connection;
 
         public StorageRepository(DbConnection connection)
         {
@@ -37,6 +37,17 @@ namespace KSimple.Models.Repositories
             ");
         }
 
+        public async Task<IEnumerable<(Storage, bool)>> GetAllUserStorages(Guid userId)
+        {
+            return await _connection.QueryAsync<Storage, long, (Storage, bool)>(@"
+                SELECT S.Id, S.UserDefinedId, S.Name, S.StorageFields, S.Status, S.TemplateId, Rights_CanModifyStorages CanModifyStorages FROM (
+                    SELECT GroupId, Rights_CanModifyStorages FROM UserGroupRights
+                    WHERE UserId = @userId AND Rights_CanReadStorages = 1) t1
+                JOIN StorageGroups SG ON t1.GroupId = SG.GroupId
+                JOIN Storages S on SG.StorageId = S.Id
+            ", (storage, b) => (storage, b != 0), new {userId}, splitOn: "CanModifyStorages" );
+        }
+
         public async Task<Storage> GetStorageById(Guid id)
         {
             return await _connection.QueryFirstOrDefaultAsync<Storage>(@"
@@ -45,6 +56,18 @@ namespace KSimple.Models.Repositories
             ", new {id});
         }
 
+        public async Task<(Storage, bool)> GetUserStorageById(Guid userId, Guid storageId)
+        {
+            return (await _connection.QueryAsync<Storage, long, (Storage, bool)>(@"
+                SELECT S.Id, S.UserDefinedId, S.Name, S.StorageFields, S.Status, S.TemplateId, Rights_CanModifyStorages CanModifyStorages FROM (
+                    SELECT GroupId, Rights_CanModifyStorages FROM UserGroupRights
+                    WHERE UserId = @userId AND Rights_CanReadStorages = 1) t1
+                JOIN StorageGroups SG ON t1.GroupId = SG.GroupId
+                JOIN Storages S on SG.StorageId = S.Id
+                WHERE StorageId = @storageId
+            ", (storage, b) => (storage, b != 0), new {userId}, splitOn: "CanModifyStorages")).ToArray()[0];
+        }
+        
         public async Task<Guid> InsertStorage(Storage storage)
         {
             return await _connection.QueryFirstAsync<Guid>(@"
@@ -55,7 +78,7 @@ namespace KSimple.Models.Repositories
             ", storage);
         }
 
-        public async void UpdateStorage(Storage storage)
+        public async Task UpdateStorage(Storage storage)
         {
             await (_connection.QueryAsync(@"
                 UPDATE Storages
@@ -67,16 +90,12 @@ namespace KSimple.Models.Repositories
             ", storage));
         }
 
-        public async Task<Storage> DeleteStorageById(Guid storageId)
+        public async Task DeleteStorageById(Guid storageId)
         {
-            var res = await GetStorageById(storageId);
-
             await _connection.QueryAsync(@"
                 DELETE FROM Storages
                 WHERE Id = @Id;
             ");
-
-            return res;
         }
     }
 }

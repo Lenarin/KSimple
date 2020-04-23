@@ -17,23 +17,23 @@ namespace KSimple.Models.Misc
         
         public static bool Check(string dataType, JToken value)
         {
-            return TypeList[dataType](value);
+            return TypeList[dataType.ToLower()](value);
         }
         
         public static Dictionary<string, Func<JToken, bool>> TypeList = 
             new Dictionary<string, Func<JToken, bool>>
             {
-                {"Number", elem =>  elem.Type == JTokenType.Float || elem.Type == JTokenType.Integer},
-                {"Boolean", elem => elem.Type == JTokenType.Boolean},
-                {"String", elem => elem.Type == JTokenType.String},
-                {"Object", elem => elem.Type == JTokenType.Object},
-                {"Number[]", elem => elem.Type == JTokenType.Array && 
+                {"number", elem =>  elem.Type == JTokenType.Float || elem.Type == JTokenType.Integer},
+                {"boolean", elem => elem.Type == JTokenType.Boolean},
+                {"string", elem => elem.Type == JTokenType.String},
+                {"object", elem => elem.Type == JTokenType.Object},
+                {"number[]", elem => elem.Type == JTokenType.Array && 
                                      elem.ToObject<List<JToken>>()
                                          .All(val => val.Type == JTokenType.Float || val.Type == JTokenType.Integer)},
-                {"Boolean[]", elem => elem.Type == JTokenType.Array && 
+                {"boolean[]", elem => elem.Type == JTokenType.Array && 
                                       elem.ToObject<List<JToken>>()
                                           .All(val => val.Type == JTokenType.Boolean)},
-                {"String[]", elem => elem.Type == JTokenType.Array && 
+                {"string[]", elem => elem.Type == JTokenType.Array && 
                                      elem.ToObject<List<JToken>>()
                                          .All(val => val.Type == JTokenType.String)}
             };

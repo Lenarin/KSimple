@@ -7,8 +7,14 @@ using System.Threading.Tasks;
 using KSimple.Models;
 using KSimple.Models.Entities;
 using KSimple.Models.Misc;
+using KSimple.Models.Repositories;
+using KSimple.Models.Requests;
+using KSimple.Models.Responses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 // TODO Add get user by username
 namespace KSimple.Controllers
@@ -18,79 +24,136 @@ namespace KSimple.Controllers
     public class UsersController : ControllerBase
     {
         private readonly ApplicationContext _context;
+        private readonly string _connectionString;
 
-        public UsersController(ApplicationContext context)
+        public UsersController(ApplicationContext context, IConfiguration configuration)
         {
             _context = context;
+            _connectionString = configuration.GetConnectionString("DefaultConnection");
         }
         
         [HttpGet]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
-            return await _context.Users.AsNoTracking().ToListAsync();
+            await using var connection = new SqliteConnection(_connectionString);
+            connection.Open();
+            return Ok(await new UserRepository(connection).GetAllUser());
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<User>> GetUserById(Guid id)
         {
-            var user = await _context.Users.FindAsync(id);
+            if (User.Claims.First(c => c.Type == "userid").Value != id.ToString())
+                return Unauthorized();
+            
+            await using var connection = new SqliteConnection(_connectionString);
+            connection.Open();
+            var user = await new UserRepository(connection).GetUserById(id);
 
             if (user == null)
-            {
                 return NotFound();
-            }
 
             return Ok(user);
         }
 
+        /// <summary>
+        /// Create user with given username and other properties. Also create default group fro user and add link to it
+        /// </summary>
+        /// <param name="user">User to be created/param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(User user)
         {
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+            if (user.Name == null)
+                return BadRequest(new ErrorResponse("Username must be provided"));
+
+            await using var connection = new SqliteConnection(_connectionString);
+            connection.Open();
+
+            var transaction = connection.BeginTransaction();
+            
+            var groupRepo = new GroupRepository(connection);
+
+            var group = new Group()
+            {
+                Id = Guid.NewGuid(),
+                Name = $"{user.Name}_Default_Group"
+            };
+            
+            user.Id = Guid.NewGuid();
+            user.DefaultGroupId = group.Id;
+
+            var userGroupRight = new UserGroupRight()
+            {
+                GroupId = group.Id,
+                UserId = user.Id,
+                Rights = Right.GetAdminRights()
+            };
+
+            try
+            {
+                await groupRepo.InsertGroup(group);
+                await new UserRepository(connection).AddUser(user);
+                await groupRepo.InsertUsersToGroup(userGroupRight);
+            }
+            catch (SqliteException ex)
+            {
+                transaction.Rollback();
+                return BadRequest(new ErrorResponse(ex.Message));
+
+            }
+
+            transaction.Commit();
 
             return CreatedAtAction("GetUserById", new {id = user.Id}, user);
         }
 
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<ActionResult<User>> DeleteUserById(Guid id)
         {
-            var user = await _context.Users.FindAsync(id);
+            if (!User.IsInRole("admin") && User.Claims.First(c => c.Type == "userid").Value != id.ToString())
+                return Unauthorized();
+            
+            await using var connection = new SqliteConnection(_connectionString);
+            connection.Open();
+            
+            var repo = new UserRepository(connection);
+
+            var user = await repo.GetUserById(id);
 
             if (user == null)
-            {
                 return NotFound();
-            }
 
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
+            await repo.DeleteUserById(id);
 
             return Ok(user);
         }
 
-        [HttpPut]
-        public async Task<ActionResult> PutUser(User user)
+        [HttpPut("id")]
+        [Authorize]
+        public async Task<ActionResult> PutUser(User userFields, Guid id)
         {
-            _context.NotNullUpdate(user);
+            if (!User.IsInRole("admin") && User.Claims.First(c => c.Type == "userid").Value != id.ToString())
+                return Unauthorized();
+            
+            await using var connection = new SqliteConnection(_connectionString);
+            connection.Open();
+            
+            var repo = new UserRepository(connection);
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!_context.Users.Any(u => u.Id == user.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            var user = await repo.GetUserById(id);
 
-            return NoContent();
+            if (user == null)
+                return NotFound();
+            
+            user.Merge(userFields);
+
+            await repo.UpdateUser(user);
+
+            return Ok(user);
         }
-
     }
 }

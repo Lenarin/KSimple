@@ -8,7 +8,8 @@ namespace KSimple.Models.Misc
         public const string Issuer = "KSimpleMain";
         public const string Audience = "KSimpleUser";
         private const string Key = "qwertyasdfgh123456789";
-        public const int Lifetime = 30;
+        public const int AccessTokenLifetime = 180; // 3 hours
+        public const int RefreshTokenLifetime = 20160; // 2 weeks
 
         public static SymmetricSecurityKey GetSymmetricSecurityKey()
         {

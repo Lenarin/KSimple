@@ -22,8 +22,10 @@
         public Guid? TemplateId { get; set; }
 
         public List<StorageGroup> StorageGroups { get; set; }
+        
+        public bool UserCanModifyStorage { get; set; }
 
-        public StorageResponse(Storage storage)
+        public StorageResponse(Storage storage, bool userCanModifyStorage = false)
         {
             Id = storage.Id;
             UserDefinedId = storage.UserDefinedId;
@@ -32,6 +34,7 @@
             Status = storage.Status;
             TemplateId = storage.TemplateId;
             StorageGroups = storage.StorageGroups;
+            UserCanModifyStorage = userCanModifyStorage;
         }
     }
 }

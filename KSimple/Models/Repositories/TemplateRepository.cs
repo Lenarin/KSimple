@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using KSimple.Models.Entities;
@@ -25,12 +26,35 @@ namespace KSimple.Models.Repositories
             ");
         }
 
+        public async Task<IEnumerable<(Template, bool)>> GetAllUserTemplates(Guid userId)
+        {
+            return await _connection.QueryAsync<Template, long, (Template, bool)>(@"
+                SELECT T.Id, T.UserDefinedId, T.Name, T.ModelTree, T.Status, Rights_CanModifyTemplates CanModifyTemplates FROM (
+                    SELECT GroupId, Rights_CanModifyTemplates FROM UserGroupRights
+                    WHERE UserId = @userId AND Rights_CanReadTemplates = 1) t1
+                JOIN TemplateGroups TG ON t1.GroupId = TG.GroupId
+                JOIN Templates T ON TG.TemplateId = T.Id
+            ", (template, b) => (template, b != 0), new {userId}, splitOn: "CanModifyTemplates" );
+        }
+
         public async Task<Template> GetTemplateById(Guid id)
         {
             return await _connection.QueryFirstOrDefaultAsync<Template>(@"
                 SELECT * FROM Templates
                 WHERE Id = @Id
             ", new {Id = id});
+        }
+
+        public async Task<(Template, bool)> GetUserTemplateById(Guid userId, Guid templateId)
+        {
+            return (await _connection.QueryAsync<Template, long, (Template, bool)>(@"
+                SELECT T.Id, T.UserDefinedId, T.Name, T.ModelTree, T.Status, Rights_CanModifyTemplates CanModifyTemplates FROM (
+                    SELECT GroupId, Rights_CanModifyTemplates FROM UserGroupRights
+                    WHERE UserId = @userId AND Rights_CanReadTemplates = 1) t1
+                JOIN TemplateGroups TG ON t1.GroupId = TG.GroupId
+                JOIN Templates T ON TG.TemplateId = T.Id
+                WHERE TemplateId = @templateId
+            ", (template, b) => (template, b != 0), new {userId}, splitOn: "CanModifyTemplates")).ToArray()[0];
         }
 
         public async Task AddNewTemplate(Template template)
@@ -67,6 +91,18 @@ namespace KSimple.Models.Repositories
                 SELECT ModelTree FROM Templates
                 WHERE Id = @Id
             ", new {Id});
+        }
+
+        public async Task<(ModelTreeNode, bool)> GetUserModelTree(Guid userId, Guid templateId)
+        {
+            return (await _connection.QueryAsync<ModelTreeNode, long, (ModelTreeNode, bool)>(@"
+                SELECT T.ModelTree, Rights_CanModifyTemplates CanModifyTemplates FROM (
+                    SELECT GroupId, Rights_CanModifyTemplates FROM UserGroupRights
+                    WHERE UserId = @userId AND Rights_CanReadTemplates = 1) t1
+                    JOIN TemplateGroups TG ON t1.GroupId = TG.GroupId
+                    JOIN Templates T ON TG.TemplateId = T.Id
+                WHERE TemplateId = @templateId
+            ", (node, b) => (node, b != 0), new {userId}, splitOn: "CanModifyTemplates")).ToArray()[0];
         }
 
         public async Task SetModelTree(Guid Id, ModelTreeNode ModelTree)

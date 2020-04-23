@@ -10,7 +10,7 @@ namespace KSimple.Models.Repositories
 {
     public class PacketRepository
     {
-        private DbConnection _connection;
+        private readonly DbConnection _connection;
 
         public PacketRepository(DbConnection connection)
         {

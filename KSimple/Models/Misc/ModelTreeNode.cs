@@ -44,9 +44,14 @@ namespace KSimple.Models.Misc
             if (ids == null) ids = new HashSet<string>();
             
             if (ids.Contains(Id)) throw new Exception($"{Id} not unique");
+            
             if (!_types.Contains(Type)) throw new Exception($"Unknown type {Type} on {Id}");
-            if (Type == "value" && !StorageField.TypeList.ContainsKey(ValueType)) throw new Exception($"Unknown value type {ValueType} on {Id}");
-            if (!StorageField.Check(ValueType, InitValue)) throw new Exception($"Bad init value on {Id}");
+            
+            if (Type == "value" && !StorageField.TypeList.ContainsKey(ValueType.ToLower())) 
+                throw new Exception($"Unknown value type {ValueType} on {Id}");
+            
+            if (Type == "value" && !StorageField.Check(ValueType, InitValue)) 
+                throw new Exception($"Bad init value on {Id}");
 
             ids.Add(Id);
 
@@ -55,9 +60,38 @@ namespace KSimple.Models.Misc
 
         private static List<string> _types = new List<string>
         {
-            "subsystem",
+            "folder",
             "value",
             "action"
         };
+
+        /// <summary>
+        /// Recursively generate storage fields dictionary from model tree. 
+        /// </summary>
+        /// <param name="dict"></param>
+        /// <returns></returns>
+        public Dictionary<string, StorageField> ToStorageFields(Dictionary<string, StorageField> dict = null)
+        {
+            if (Id == "root")
+            {
+                if (dict != null) throw new Exception("On root node dict must be null. Do not provide it outside of function.");
+                dict = new Dictionary<string, StorageField>();
+            }
+            if (Type == "value")
+            {
+                dict.Add(Name, new StorageField()
+                {
+                    DataType = ValueType,
+                    InitValue = InitValue
+                });
+            }
+
+            foreach (var node in Children)
+            {
+                node.ToStorageFields(dict);
+            }
+
+            return dict;
+        }
     }
 }

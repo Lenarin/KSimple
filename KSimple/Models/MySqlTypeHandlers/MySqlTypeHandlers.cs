@@ -10,6 +10,7 @@ namespace KSimple.Models.MySqlTypeHandlers
             SqlMapper.AddTypeHandler(new MySqlJsonDictTypeHandler());
             SqlMapper.AddTypeHandler(new MySqlDictStorageFieldTypeHandler());
             SqlMapper.AddTypeHandler(new MySqlModelTreeNodeTypeHandler());
+            SqlMapper.AddTypeHandler(new MySqlBoolTypeHandler());
         }
         
     }

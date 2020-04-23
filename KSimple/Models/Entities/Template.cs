@@ -33,6 +33,8 @@ namespace KSimple.Models.Entities
 
         public bool Validate()
         {
+            if (UserDefinedId == null) throw new Exception("User defined id must be set");
+            if (Name == null) throw new Exception("Name must be set");
             if (ModelTree.Id != "root") throw new Exception("Top node of tree must have id - 'root'");
             return ModelTree.Validate();
         }

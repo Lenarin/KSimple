@@ -3,10 +3,9 @@
   <component name="ContentModelStore">
     <e p="C:\Users\Lenarin\.Rider2019.3\config\consoles\db" t="IncludeRecursive" />
     <e p="C:\Users\Lenarin\.Rider2019.3\config\extensions" t="IncludeRecursive" />
-    <e p="C:\Users\Lenarin\.Rider2019.3\config\scratches" t="IncludeRecursive" />
     <e p="C:\Users\Lenarin\.Rider2019.3\system\extResources" t="IncludeRecursive" />
-    <e p="C:\Users\Lenarin\.Rider2019.3\system\resharper-host\local\Transient\ReSharperHost\v193\SolutionCaches\_KSimple.504204113.00" t="ExcludeRecursive" />
-    <e p="D:\Projects\NETProjects\KSimple" t="IncludeFlat">
+    <e p="C:\Users\Lenarin\.Rider2019.3\system\resharper-host\local\Transient\ReSharperHost\v193\SolutionCaches\_KSimple.647787779.00" t="ExcludeRecursive" />
+    <e p="E:\WebProjects\KSimple" t="IncludeFlat">
       <e p="KSimple" t="IncludeRecursive">
         <e p=".gitignore" t="Include" />
         <e p="appsettings.Development.json" t="Include" />
@@ -24,8 +23,10 @@
           <e p="SerilogMiddleware.cs" t="Include" />
         </e>
         <e p="Migrations" t="Include">
-          <e p="20200410192306_test.cs" t="Include" />
-          <e p="20200410192306_test.Designer.cs" t="Include" />
+          <e p="20200420133152_test.cs" t="Include" />
+          <e p="20200420133152_test.Designer.cs" t="Include" />
+          <e p="20200422172421_test1.cs" t="Include" />
+          <e p="20200422172421_test1.Designer.cs" t="Include" />
           <e p="ApplicationContextModelSnapshot.cs" t="Include" />
         </e>
         <e p="Models" t="Include">
@@ -33,6 +34,7 @@
           <e p="Entities" t="Include">
             <e p="Group.cs" t="Include" />
             <e p="Packet.cs" t="Include" />
+            <e p="RefreshToken.cs" t="Include" />
             <e p="Storage.cs" t="Include" />
             <e p="Template.cs" t="Include" />
             <e p="User.cs" t="Include" />
@@ -47,6 +49,7 @@
             <e p="UserGroupRights.cs" t="Include" />
           </e>
           <e p="MySqlTypeHandlers" t="Include">
+            <e p="MySqlBoolTypeHandler.cs" t="Include" />
             <e p="MySqlDictStorageFieldTypeHandler.cs" t="Include" />
             <e p="MySQLGuidTypeHandler.cs" t="Include" />
             <e p="MySqlJsonDictTypeHandler.cs" t="Include" />
@@ -54,13 +57,22 @@
             <e p="MySqlTypeHandlers.cs" t="Include" />
           </e>
           <e p="Repositories" t="Include">
+            <e p="GroupRepository.cs" t="Include" />
             <e p="PacketRepository.cs" t="Include" />
+            <e p="RefreshTokenRepository.cs" t="Include" />
             <e p="StorageRepository.cs" t="Include" />
             <e p="TemplateRepository.cs" t="Include" />
+            <e p="UserRepository.cs" t="Include" />
+          </e>
+          <e p="Requests" t="Include">
+            <e p="AuthRequsts.cs" t="Include" />
+            <e p="PutGroupRequest.cs" t="Include" />
           </e>
           <e p="Responses" t="Include">
+            <e p="GroupResponse.cs" t="Include" />
             <e p="Misc.cs" t="Include" />
             <e p="StorageResponse.cs" t="Include" />
+            <e p="TemplateResponse.cs" t="Include" />
           </e>
         </e>
         <e p="obj" t="ExcludeRecursive">
@@ -76,6 +88,8 @@
         </e>
         <e p="Startup.cs" t="Include" />
         <e p="test.db" t="Include" />
+        <e p="test.db-shm" t="Include" />
+        <e p="test.db-wal" t="Include" />
       </e>
       <e p="KSimple.sln" t="IncludeFlat" />
       <e p="packages" t="ExcludeRecursive" />

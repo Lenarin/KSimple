@@ -10,7 +10,7 @@ namespace KSimple.Models.MySqlTypeHandlers
     {
         public override void SetValue(IDbDataParameter parameter, Dictionary<string, StorageField> value)
         {
-            parameter.Value = JsonConvert.SerializeObject(value);
+            parameter.Value = JsonConvert.SerializeObject(value, Formatting.Indented);
         }
 
         public override Dictionary<string, StorageField> Parse(object value)

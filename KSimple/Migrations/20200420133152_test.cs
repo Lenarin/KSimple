@@ -25,9 +25,9 @@ namespace KSimple.Migrations
                 {
                     Id = table.Column<Guid>(nullable: false),
                     UserDefinedId = table.Column<string>(maxLength: 32, nullable: false),
-                    Name = table.Column<string>(maxLength: 32, nullable: false),
-                    ModelTree = table.Column<string>(nullable: false),
-                    Status = table.Column<string>(nullable: false)
+                    Name = table.Column<string>(maxLength: 32, nullable: true),
+                    ModelTree = table.Column<string>(nullable: true),
+                    Status = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -43,7 +43,8 @@ namespace KSimple.Migrations
                     Name = table.Column<string>(nullable: false),
                     Email = table.Column<string>(nullable: true),
                     Password = table.Column<string>(nullable: true),
-                    Role = table.Column<string>(nullable: true)
+                    Role = table.Column<string>(nullable: true),
+                    DefaultGroupId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -99,13 +100,35 @@ namespace KSimple.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "RefreshTokens",
+                columns: table => new
+                {
+                    Token = table.Column<string>(nullable: false),
+                    ValidTo = table.Column<DateTime>(nullable: false),
+                    UserId = table.Column<Guid>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RefreshTokens", x => x.Token);
+                    table.ForeignKey(
+                        name: "FK_RefreshTokens_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "UserGroupRights",
                 columns: table => new
                 {
                     UserId = table.Column<Guid>(nullable: false),
                     GroupId = table.Column<Guid>(nullable: false),
                     Rights_CanReadStorages = table.Column<bool>(nullable: true),
-                    Rights_CanModifyStorages = table.Column<bool>(nullable: true)
+                    Rights_CanModifyStorages = table.Column<bool>(nullable: true),
+                    Rights_CanModifyGroup = table.Column<bool>(nullable: true),
+                    Rights_CanReadTemplates = table.Column<bool>(nullable: true),
+                    Rights_CanModifyTemplates = table.Column<bool>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -176,6 +199,11 @@ namespace KSimple.Migrations
                 column: "StorageId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_RefreshTokens_UserId",
+                table: "RefreshTokens",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_StorageGroups_StorageId",
                 table: "StorageGroups",
                 column: "StorageId");
@@ -200,6 +228,9 @@ namespace KSimple.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Packets");
+
+            migrationBuilder.DropTable(
+                name: "RefreshTokens");
 
             migrationBuilder.DropTable(
                 name: "StorageGroups");
